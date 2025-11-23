@@ -1,0 +1,202 @@
+# README.md
+# Scientific Calculator + Streamlit App + GitHub Code
+
+This repository contains:
+1. `scientific_calculator.py` — core scientific calculator functions
+2. `streamlit_app.py` — Streamlit UI for the calculator
+3. `requirements.txt` — dependencies
+4. `.gitignore` — ignored Python files
+5. `tests.py` — simple tests
+
+Run locally:
+```bash
+pip install -r requirements.txt
+streamlit run streamlit_app.py
+```
+
+---
+
+# === scientific_calculator.py ===
+"""
+Scientific calculator functions: trigonometry, logarithms, roots, factorial, etc.
+"""
+import math
+
+# Basic
+
+def add(a, b): return a + b
+
+def sub(a, b): return a - b
+
+def mul(a, b): return a * b
+
+def div(a, b):
+    if b == 0: raise ZeroDivisionError("Division by zero")
+    return a / b
+
+def power(a, b): return a ** b
+
+def sqrt(a):
+    if a < 0: raise ValueError("Cannot take square root of negative number")
+    return math.sqrt(a)
+
+# Trigonometry
+
+def sin(x): return math.sin(math.radians(x))
+
+def cos(x): return math.cos(math.radians(x))
+
+def tan(x): return math.tan(math.radians(x))
+
+# Inverse trig
+
+def asin(x): return math.degrees(math.asin(x))
+
+def acos(x): return math.degrees(math.acos(x))
+
+def atan(x): return math.degrees(math.atan(x))
+
+# Logarithms
+
+def ln(x):
+    if x <= 0: raise ValueError("ln undefined for <= 0")
+    return math.log(x)
+
+def log10(x):
+    if x <= 0: raise ValueError("log10 undefined for <= 0")
+    return math.log10(x)
+
+# Factorial
+
+def factorial(n):
+    if n < 0: raise ValueError("Factorial undefined for negative numbers")
+    return math.factorial(int(n))
+
+
+if __name__ == "__main__":
+    print("Scientific calculator module loaded.")
+
+
+# === streamlit_app.py ===
+"""Streamlit UI for Scientific Calculator"""
+import streamlit as st
+import scientific_calculator as calc
+
+st.set_page_config(page_title="Scientific Calculator", layout="centered")
+st.title("🔢 Scientific Calculator")
+
+category = st.selectbox(
+    "Choose Operation Category",
+    ["Basic", "Scientific", "Trigonometric", "Inverse Trigonometric", "Logarithmic", "Factorial"]
+)
+
+# BASIC
+if category == "Basic":
+    a = st.number_input("Value A", value=0.0)
+    b = st.number_input("Value B", value=0.0)
+    op = st.selectbox("Operation", ["Add", "Subtract", "Multiply", "Divide", "Power"])
+
+    if st.button("Calculate Basic"):
+        try:
+            if op == "Add": res = calc.add(a, b)
+            elif op == "Subtract": res = calc.sub(a, b)
+            elif op == "Multiply": res = calc.mul(a, b)
+            elif op == "Divide": res = calc.div(a, b)
+            else: res = calc.power(a, b)
+
+            st.success(f"Result: {res}")
+        except Exception as e:
+            st.error(e)
+
+# SCIENTIFIC
+elif category == "Scientific":
+    a = st.number_input("Value", value=0.0)
+    op = st.selectbox("Select Operation", ["Square Root", "x^2", "x^3"])
+
+    if st.button("Calculate Scientific"):
+        try:
+            if op == "Square Root": res = calc.sqrt(a)
+            elif op == "x^2": res = calc.power(a, 2)
+            else: res = calc.power(a, 3)
+            st.success(f"Result: {res}")
+        except Exception as e:
+            st.error(e)
+
+# TRIGONOMETRIC
+elif category == "Trigonometric":
+    angle = st.number_input("Angle (Degrees)", value=0.0)
+    op = st.selectbox("Function", ["sin", "cos", "tan"])
+
+    if st.button("Calculate Trig"):
+        try:
+            if op == "sin": res = calc.sin(angle)
+            elif op == "cos": res = calc.cos(angle)
+            else: res = calc.tan(angle)
+            st.success(f"Result: {res}")
+        except Exception as e:
+            st.error(e)
+
+# INVERSE TRIG
+elif category == "Inverse Trigonometric":
+    x = st.number_input("Value (-1 to 1)", value=0.0)
+    op = st.selectbox("Function", ["asin", "acos", "atan"])
+
+    if st.button("Calculate Inverse Trig"):
+        try:
+            if op == "asin": res = calc.asin(x)
+            elif op == "acos": res = calc.acos(x)
+            else: res = calc.atan(x)
+            st.success(f"Angle: {res} degrees")
+        except Exception as e:
+            st.error(e)
+
+# LOGARITHMIC
+elif category == "Logarithmic":
+    x = st.number_input("Value (> 0)", value=1.0)
+    op = st.selectbox("Function", ["ln", "log10"])
+
+    if st.button("Calculate Log"):
+        try:
+            if op == "ln": res = calc.ln(x)
+            else: res = calc.log10(x)
+            st.success(f"Result: {res}")
+        except Exception as e:
+            st.error(e)
+
+# FACTORIAL
+elif category == "Factorial":
+    n = st.number_input("Integer Value", value=1, step=1)
+
+    if st.button("Calculate Factorial"):
+        try:
+            res = calc.factorial(int(n))
+            st.success(f"{int(n)}! = {res}")
+        except Exception as e:
+            st.error(e)
+
+
+# === requirements.txt ===
+streamlit>=1.0
+
+# === .gitignore ===
+__pycache__/
+*.pyc
+.env
+venv/
+.venv/
+
+# === tests.py ===
+import scientific_calculator as calc
+
+assert calc.add(2, 3) == 5
+assert round(calc.sin(30), 2) == 0.5
+assert calc.factorial(5) == 120
+
+print("All tests passed!")
+
+# === GitHub Instructions ===
+# git init
+# git add .
+# git commit -m "Scientific calculator project"
+# git remote add origin https://github.com/<your-username>/scientific-calculator.git
+# git push -u origin main
